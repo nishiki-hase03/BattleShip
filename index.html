@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>海戦ゲーム -Battle Ship-</title>
+    <!--ウィンドウの高さの残り全部を覆うdivを作る方法
+        下記を参考に、改良。
+        https://stackoverflow.com/questions/90178/make-a-div-fill-the-height-of-the-remaining-screen-space -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="wrapper">
+        <div class="title">海戦ゲーム -Battle Ship-</div>
+        <div id="lower-area">
+            <div id="join-screen">
+                <form id="join-form" action="">
+                    プレイヤー名 : <input type="text" id="input_nickname" autocomplete="off" required/><br>
+                    ルームID：<input type="text" id="input_room_id" autocomplete="off" /><br>
+                    <button type="submit">Join</button>
+                </form>
+            </div>
+
+            <div id="main-screen">
+                <table width="100%">
+                    <tr>
+                        <td width="50%"><div class="one-half column" id="roomID"></div></td>
+                        <td width="50%"><div class="one-half column">プレイヤー名 : <span id="nickname"></span></div></td>
+                    </tr>
+                </table>
+                <div id="status"></div>
+                <div id="err"></div>
+                <div id="win"></div>
+                <div id="end"><a href="">航海を続ける</a></div>
+                <div id="battle-screen">
+                    <form id="chat-form" action="">
+                        
+                        <br />
+                        残基<br>
+                            <ul>戦艦（W）：耐久値<span style="color: red;" id="warship"></span></ul>
+                            <ul>駆逐艦（D）：耐久値<span style="color: red;" id="destroyer"></span></ul>
+                            <ul>潜水艦（S）：耐久値<span style="color: red;" id="submarine"></span></ul>
+                        <br>
+                        メッセージ : <input type="text" id="input_message" autocomplete="off" /><button type="submit">Send</button>
+                    </form>
+                    <form id="set_ships" action="">
+                        戦艦
+                        位置：横
+                        <select id="wx">
+                            <option value="A">A</option>
+                            <option value="B">B</option>
+                            <option value="C">C</option>
+                            <option value="D">D</option>
+                            <option value="E">E</option>
+                        </select>
+                        縦
+                        <select id="wy">
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                        </select>
+                        <br>
+                        駆逐艦
+                        位置：横
+                        <select id="dx">
+                            <option value="A">A</option>
+                            <option value="B">B</option>
+                            <option value="C">C</option>
+                            <option value="D">D</option>
+                            <option value="E">E</option>
+                        </select>
+                        縦
+                        <select id="dy">
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                        </select>
+                        <br>
+                        潜水艦
+                        位置：横
+                        <select id="sx">
+                            <option value="A">A</option>
+                            <option value="B">B</option>
+                            <option value="C">C</option>
+                            <option value="D">D</option>
+                            <option value="E">E</option>
+                        </select>
+                        縦
+                        <select id="sy">
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                        </select>
+                        <br>
+                        <button type="submit">配置</button>
+                    </form>
+                    <table class="field">
+                        <tr>
+                            <td id="grid"></td>
+                            <td id="grid">A</td>
+                            <td id="grid">B</td>
+                            <td id="grid">C</td>
+                            <td id="grid">D</td>
+                            <td id="grid">E</td>
+                        </tr>
+                        <tr>
+                            <td id="grid">1</td>
+                            <td id="A-1"></td>
+                            <td id="B-1"></td>
+                            <td id="C-1"></td>
+                            <td id="D-1"></td>
+                            <td id="E-1"></td>
+                        </tr>
+                        <tr>
+                            <td id="grid">2</td>
+                            <td id="A-2"></td>
+                            <td id="B-2"></td>
+                            <td id="C-2"></td>
+                            <td id="D-2"></td>
+                            <td id="E-2"></td>
+                        </tr>
+                        <tr>
+                            <td id="grid">3</td>
+                            <td id="A-3"></td>
+                            <td id="B-3"></td>
+                            <td id="C-3"></td>
+                            <td id="D-3"></td>
+                            <td id="E-3"></td>
+                        </tr>
+                        <tr>
+                            <td id="grid">4</td>
+                            <td id="A-4"></td>
+                            <td id="B-4"></td>
+                            <td id="C-4"></td>
+                            <td id="D-4"></td>
+                            <td id="E-4"></td>
+                        </tr>
+                        <tr>
+                            <td id="grid">5</td>
+                            <td id="A-5"></td>
+                            <td id="B-5"></td>
+                            <td id="C-5"></td>
+                            <td id="D-5"></td>
+                            <td id="E-5"></td>
+                        </tr>
+                    </table>
+                    <div id="command">
+                        <form id="attack_ships" action="">
+                            位置：横
+                            <select id="ax">
+                                <option value="A">A</option>
+                                <option value="B">B</option>
+                                <option value="C">C</option>
+                                <option value="D">D</option>
+                                <option value="E">E</option>
+                            </select>
+                            縦
+                            <select id="ay">
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                            </select>
+                            <br>
+                            <button type="submit">攻撃</button>
+                        </form>
+                        <br>
+                        <form id="move_ships" action="">
+                            種類
+                            <select id="type">
+                                <option value="3">戦艦</option>
+                                <option value="2">駆逐艦</option>
+                                <option value="1">潜水艦</option>
+                            </select>
+                            方向
+                            <select id="dest">
+                                <option value="E">東</option>
+                                <option value="W">西</option>
+                                <option value="N">北</option>
+                                <option value="S">南</option>
+                            </select>
+                            <br>
+                            <button type="submit">移動</button>
+                        </form>
+                    </div>
+                    <div>
+                        ログ（新しいものから上に追加）<br>
+                        <ul id="message_list"></ul>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="client.js"></script>
+    <script src="game.js"></script>
+</body>
+</html>
